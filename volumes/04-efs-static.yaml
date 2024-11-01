@@ -72,6 +72,7 @@ spec:
     requests:
       storage: 5Gi
 ---
+# adding pod and service
 apiVersion: v1
 kind: Pod
 metadata:
@@ -88,7 +89,7 @@ spec:
   volumes:
   - name: expense-efs
     persistentVolumeClaim:
-      claimName: expense-efs
+      claimName: expense-efs  
 ---
 kind: Service
 apiVersion: v1
