@@ -1,11 +1,15 @@
-kind: Pod
-apiVersion: v1
+# multi-containers - Pods that run multiple containers that need to work together. A Pod can encapsulate an application composed of multiple co-located containers that are tightly coupled and need to share resources.
+
+# Grouping multiple co-located and co-managed containers in a single Pod is a relatively advanced use case. You should use this pattern only in specific instances in which your containers are tightly coupled.
+
+kind: Pod                          # Specifies the resource type as Pod
+apiVersion: v1                     # Defines the API version (v1) for this resource
 metadata:
-  name: multi-container
-spec:
-  containers:
-  - name: nginx
-    image: nginx
-  - name: almalinux
-    image: almalinux:9
-    command: ["sleep","1000"]
+  name: multi-container            # Sets the name of the Pod as "multi-container"
+spec:                              # Specifies the configuration for the Pod
+  containers:                      # Defines the list of containers in this Pod
+  - name: nginx                    # Names the first container "nginx"
+    image: nginx                   # Sets the container image to "nginx", a web server (container-1)
+  - name: almalinux                # Names the second container "almalinux"
+    image: almalinux:9             # Sets the container image to "almalinux" with version "9" (container-2)
+    command: ["sleep","1000"]      # Specifies a custom command to keep the container running by sleeping for 1000 seconds

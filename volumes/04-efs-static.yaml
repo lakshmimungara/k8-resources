@@ -43,65 +43,79 @@
 #     requests:
 #       storage: 5Gi
 
-apiVersion: v1
-kind: PersistentVolume
+
+# PersistentVolume (PV)
+
+apiVersion: v1                        # Specifies the API version (v1) for defining this resource
+kind: PersistentVolume                # Defines the resource type as PersistentVolume (PV)
 metadata:
-  name: expense-efs
-spec:
+  name: expense-efs                   # Sets the name of the PV as "expense-efs"
+spec:                                 # Defines configuration for the PV
   capacity:
-    storage: 5Gi
-  volumeMode: Filesystem
+    storage: 5Gi                      # Sets the storage capacity to 5Gi
+  volumeMode: Filesystem              # Specifies the volume mode as Filesystem, enabling it to be mounted as a directory
   accessModes:
-    - ReadWriteOnce
-  storageClassName: ""
-  persistentVolumeReclaimPolicy: Retain
-  csi:
-    driver: efs.csi.aws.com
-    volumeHandle: fs-095be04f1087505d5
+    - ReadWriteOnce                   # Allows the volume to be mounted in read-write mode by a single node
+  storageClassName: ""                # Leaves storage class empty, indicating no specific storage class
+  persistentVolumeReclaimPolicy: Retain   # Sets reclaim policy to Retain, preserving data after PVC deletion
+  csi:                                # Configures the CSI driver for AWS EFS
+    driver: efs.csi.aws.com           # Uses the AWS EFS CSI driver (efs.csi.aws.com) for provisioning
+    volumeHandle: fs-095be04f1087505d5   # References the unique EFS ID on AWS (fs-095be04f1087505d5)
+
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
+
+# PersistentVolumeClaim (PVC)
+
+apiVersion: v1                        # Specifies the API version (v1) for defining this resource
+kind: PersistentVolumeClaim           # Defines the resource type as PersistentVolumeClaim (PVC)
 metadata:
-  name: expense-efs
-spec:
-  volumeName: expense-efs
+  name: expense-efs                   # Sets the name of the PVC as "expense-efs"
+spec:                                 # Defines configuration for the PVC
+  volumeName: expense-efs             # Binds the PVC to the PV named "expense-efs"
   accessModes:
-    - ReadWriteOnce
-  storageClassName: ""
+    - ReadWriteOnce                   # Matches the access mode of the PV, allowing single-node read-write access
+  storageClassName: ""                # Matches the empty storage class in the PV
   resources:
     requests:
-      storage: 5Gi
+      storage: 5Gi                    # Requests a storage allocation of 5Gi, aligning with the PV's capacity
+
 ---
-# adding pod and service
-apiVersion: v1
-kind: Pod
+
+# Pod Definition
+
+apiVersion: v1                        # Specifies the API version (v1) for defining this resource
+kind: Pod                             # Defines the resource type as Pod
 metadata:
-  name: efs-static
+  name: efs-static                    # Sets the name of the Pod as "efs-static"
   labels:
-    purpose: efs-static
+    purpose: efs-static               # Adds a label "purpose: efs-static" for Service selection
 spec:
   containers:
-  - name: nginx
-    image: nginx
-    volumeMounts: # docker run -v hostpath:contaierpath
-    - name: expense-efs
-      mountPath: /usr/share/nginx/html
+  - name: nginx                       # Names the container "nginx"
+    image: nginx                      # Specifies the container image as "nginx"
+    volumeMounts:
+    - name: expense-efs               # Mounts the volume "expense-efs" inside the container
+      mountPath: /usr/share/nginx/html   # Specifies the mount path as /usr/share/nginx/html, allowing data persistence on the EFS volume
   volumes:
-  - name: expense-efs
+  - name: expense-efs                 # Names the volume "expense-efs"
     persistentVolumeClaim:
-      claimName: expense-efs  
+      claimName: expense-efs          # Attaches the PVC "expense-efs" to the Pod
+
 ---
-kind: Service
-apiVersion: v1
+
+# Service Definition
+
+kind: Service                         # Defines the resource type as Service
+apiVersion: v1                        # Specifies the API version (v1) for defining this resource
 metadata:
-  name: nginx
+  name: nginx                         # Sets the name of the Service as "nginx"
 spec:
-  type: LoadBalancer
+  type: LoadBalancer                  # Specifies LoadBalancer to expose the Service externally
   selector:
-    purpose: efs-static
+    purpose: efs-static               # Matches Pods with label "purpose: efs-static" to associate with this Service
   ports:
-  - name: nginx-svc-port
-    protocol: TCP
-    port: 80 # service port
-    targetPort: 80 # container port
-    nodePort: 30007
+  - name: nginx-svc-port              # Names the port configuration as "nginx-svc-port"
+    protocol: TCP                     # Sets the protocol to TCP
+    port: 80                          # Sets the external port of the Service to 80
+    targetPort: 80                    # Routes traffic to port 80 in the container
+    nodePort: 30007                   # Exposes the Service on node port 30007 for external access on each node

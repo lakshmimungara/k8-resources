@@ -1,15 +1,17 @@
-kind: Pod
-apiVersion: v1
+# resource-limit - If the node where a Pod is running has enough of a resource available, it's possible (and allowed) for a container to use more resource than its request for that resource specifies. However, a container is not allowed to use more than its resource limit.
+
+kind: Pod                         # Specifies the resource type as Pod
+apiVersion: v1                    # Defines the API version (v1) for this resource
 metadata:
-  name: limits
-spec:
-  containers:
-  - name: nginx
-    image: nginx
-    resources:
-      requests:
-        cpu: 100m
-        memory: 68Mi
-      limits:
-        cpu: 120m
-        memory: 100Mi
+  name: limits                   # Sets the name of the Pod as "limits"
+spec:                             # Specifies the configuration for the Pod
+  containers:                     # Defines the list of containers in this Pod
+  - name: nginx                   # Names the container "nginx"
+    image: nginx                  # Sets the container image to "nginx"
+    resources:                    # Specifies resource requests and limits for the container
+      requests:                   # Defines the minimum resource requirements for the container
+        cpu: 100m                 # Requests 100 milliCPU (0.1 CPU) for the container
+        memory: 68Mi              # Requests 68 MiB of memory for the container
+      limits:                     # Defines the maximum resource limits for the container
+        cpu: 120m                 # Limits the container to a maximum of 120 milliCPU (0.12 CPU)
+        memory: 100Mi             # Limits the container to a maximum of 100 MiB of memory

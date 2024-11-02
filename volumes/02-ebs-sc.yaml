@@ -1,7 +1,9 @@
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
+# Storage class - A StorageClass provides a way for administrators to describe the classes of storage they offer.
+
+apiVersion: storage.k8s.io/v1                # Specifies the API version for StorageClass
+kind: StorageClass                           # Defines the resource type as StorageClass
 metadata:
-  name: expense-ebs
-reclaimPolicy: Retain
-provisioner: ebs.csi.aws.com
-volumeBindingMode: WaitForFirstConsumer # storage will be created when pod is getting created
+  name: expense-ebs                          # Sets the name of the StorageClass as "expense-ebs"
+reclaimPolicy: Retain                        # Keeps the storage after the PersistentVolumeClaim is deleted
+provisioner: ebs.csi.aws.com                 # Uses AWS EBS CSI driver to provision storage
+volumeBindingMode: WaitForFirstConsumer      # Delays volume provisioning until a Pod uses the volume

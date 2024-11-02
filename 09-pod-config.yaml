@@ -1,3 +1,6 @@
+# pod-config - Many applications rely on configuration which is used during either application initialization or runtime. Most times, there is a requirement to adjust values assigned to configuration parameters. ConfigMaps are a Kubernetes mechanism that let you inject configuration data into application pods.
+
+
 # kind: Pod
 # apiVersion: v1
 # metadata:
@@ -22,15 +25,16 @@
 #             key: duration
 
 
-kind: Pod
-apiVersion: v1
-metadata:
-  name: pod-config
-spec:
-  containers:
-  - name: nginx
-    image: nginx
-    envFrom:
-    - configMapRef:
-        name: nginx-config
+kind: Pod                          # Defines the resource type as Pod
+apiVersion: v1                     # Specifies the API version (v1) for the Pod resource
+metadata:                          # Metadata information about the Pod
+  name: pod-config                 # Sets the name of the Pod to "pod-config"
+spec:                              # Specification of the Pod's desired state
+  containers:                      # Defines the containers that will run within the Pod
+  - name: nginx                    # Names the container as "nginx"
+    image: nginx                   # Specifies the container image to use (nginx)
+    envFrom:                       # Indicates that environment variables will be populated from sources
+    - configMapRef:               # References a ConfigMap to source environment variables
+        name: nginx-config         # Specifies the name of the ConfigMap ("nginx-config") to use for environment variables
+
   

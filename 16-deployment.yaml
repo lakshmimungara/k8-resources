@@ -1,3 +1,5 @@
+# Deployment - A Deployment manages a set of Pods to run an application workload, usually one that doesn't maintain state. A Deployment provides declarative updates for Pods and ReplicaSets.
+
 # apiVersion: apps/v1
 # kind: Deployment
 # metadata:
@@ -39,43 +41,40 @@
 #     port: 80 # service port
 #     targetPort: 80 # container port
 
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx
-  labels: # these are replicaset labels
-    app: nginx
-    tier: frontend
-spec:
-  # modify replicas according to your case
-  replicas: 3
-  selector:
-    # these are used to select the pod to create replicas
-    matchLabels:
-      tier: frontend
-      app: nginx
-  # this is pod definition
-  template:
-    metadata:
-      # these labels belongs to pod
-      labels:
-        tier: frontend
-        app: nginx
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:stable-perl
+apiVersion: apps/v1                      # Specifies the API version for the Deployment (apps/v1)
+kind: Deployment                         # Defines the resource type as Deployment
+metadata:                                # Metadata information about the Deployment
+  name: nginx                             # Sets the name of the Deployment to "nginx"
+  labels:                                # Labels for the Deployment
+    app: nginx                           # Sets the label "app" to "nginx"
+    tier: frontend                       # Sets the label "tier" to "frontend"
+spec:                                    # Specifications for the Deployment
+  replicas: 3                            # Defines the desired number of Pod replicas (3)
+  selector:                              # Selector to identify the Pods managed by this Deployment
+    matchLabels:                        # Matches Pods with the following labels
+      tier: frontend                    # Matches Pods with the label "tier: frontend"
+      app: nginx                        # Matches Pods with the label "app: nginx"
+  template:                              # Template for creating the Pods
+    metadata:                            # Metadata for the Pods created by this Deployment
+      labels:                            # Labels that belong to the Pods
+        tier: frontend                   # Sets the label "tier" to "frontend" for the Pods
+        app: nginx                       # Sets the label "app" to "nginx" for the Pods
+    spec:                                # Specifications for the Pod
+      containers:                        # List of containers that will run in the Pod
+      - name: nginx                      # Names the container as "nginx"
+        image: nginx:stable-perl         # Specifies the container image to use (nginx with stable-perl)
+
 ---
-kind: Service
-apiVersion: v1
-metadata:
-  name: nginx
-spec:
-  selector:
-    tier: frontend
-    app: nginx
-  ports:
-  - name: nginx-svc-port
-    protocol: TCP
-    port: 80 # service port
-    targetPort: 80 # container port
+kind: Service                            # Defines the resource type as Service
+apiVersion: v1                           # Specifies the API version for the Service (v1)
+metadata:                                # Metadata information about the Service
+  name: nginx                             # Sets the name of the Service to "nginx"
+spec:                                    # Specifications for the Service
+  selector:                              # Defines the label selector to match Pods for this Service
+    tier: frontend                       # Matches Pods with the label "tier: frontend"
+    app: nginx                           # Matches Pods with the label "app: nginx"
+  ports:                                 # Specifies the list of ports exposed by the Service
+  - name: nginx-svc-port                 # Names the port for easy reference as "nginx-svc-port"
+    protocol: TCP                        # Uses TCP as the protocol for communication
+    port: 80                             # Sets the Service's external port to 80
+    targetPort: 80                       # Directs traffic to port 80 on the container running inside the matched Pods

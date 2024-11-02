@@ -1,46 +1,56 @@
-apiVersion: v1
-kind: PersistentVolumeClaim
+## PersistentVolumeClaim (PVC)
+
+apiVersion: v1                              # Specifies the API version (v1) for defining this resource
+kind: PersistentVolumeClaim                 # Defines the resource type as PersistentVolumeClaim (PVC)
 metadata:
-  name: ebs-dynamic
-spec:
-  storageClassName: "expense-ebs"
+  name: ebs-dynamic                         # Sets the name of the PVC as "ebs-dynamic"
+spec:                                       # Specifies configuration for the PVC
+  storageClassName: "expense-ebs"           # Links to the StorageClass "expense-ebs" (likely an EBS on AWS)
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOnce                         # Allows the volume to be mounted as read-write by a single node
   resources:
     requests:
-      storage: 3Gi
+      storage: 3Gi                          # Requests a storage capacity of 3Gi
+
 ---
-apiVersion: v1
-kind: Pod
+
+## Pod Definition
+
+apiVersion: v1                              # Specifies the API version (v1) for defining this resource
+kind: Pod                                   # Defines the resource type as Pod
 metadata:
-  name: ebs-dynamic
+  name: ebs-dynamic                         # Sets the name of the Pod as "ebs-dynamic"
   labels:
-    purpose: ebs-dynamic
-spec:
+    purpose: ebs-dynamic                    # Adds a label "purpose: ebs-dynamic" for Service selection
+spec:                                       # Specifies configuration for the Pod
   nodeSelector:
-    topology.kubernetes.io/zone: us-east-1a
-  containers:
-  - name: nginx
-    image: nginx
-    volumeMounts: # docker run -v hostpath:contaierpath
-    - name: ebs-dynamic
-      mountPath: /usr/share/nginx/html
-  volumes:
-  - name: ebs-dynamic
+    topology.kubernetes.io/zone: us-east-1a # Ensures the Pod is scheduled in the specified Availability Zone
+  containers:                               # Defines containers within the Pod
+  - name: nginx                             # Names the container "nginx"
+    image: nginx                            # Specifies the container image as "nginx"
+    volumeMounts:                           # Mounts volumes within the container
+    - name: ebs-dynamic                     # Mounts the volume named "ebs-dynamic"
+      mountPath: /usr/share/nginx/html      # Mounts at /usr/share/nginx/html inside the container
+  volumes:                                  # Defines volumes for the Pod
+  - name: ebs-dynamic                       # Names the volume "ebs-dynamic"
     persistentVolumeClaim:
-      claimName: ebs-dynamic
+      claimName: ebs-dynamic                # Associates with the PersistentVolumeClaim "ebs-dynamic"
+
 ---
-kind: Service
-apiVersion: v1
+
+## Service Definition
+
+kind: Service                               # Defines the resource type as Service
+apiVersion: v1                              # Specifies the API version (v1) for defining this resource
 metadata:
-  name: nginx
-spec:
-  type: LoadBalancer
+  name: nginx                               # Sets the name of the Service as "nginx"
+spec:                                       # Specifies configuration for the Service
+  type: LoadBalancer                        # Sets Service type as LoadBalancer for external access
   selector:
-    purpose: ebs-dynamic
+    purpose: ebs-dynamic                    # Selects Pods with the label "purpose: ebs-dynamic"
   ports:
-  - name: nginx-svc-port
-    protocol: TCP
-    port: 80 # service port
-    targetPort: 80 # container port
-    nodePort: 30007
+  - name: nginx-svc-port                    # Names the port configuration as "nginx-svc-port"
+    protocol: TCP                           # Specifies the protocol as TCP
+    port: 80                                # Sets the external Service port to 80
+    targetPort: 80                          # Routes the Service port to container port 80
+    nodePort: 30007                         # Exposes the Service on node port 30007 for external access

@@ -1,7 +1,10 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: nginx-config
-data:
-  course: devops
-  duration: "120hrs"
+# ConfigMap - A ConfigMap is an API object used to store non-confidential data in key-value pairs. 
+# Pods can consume ConfigMaps as environment variables, command-line arguments, or as configuration files in a volume.
+
+apiVersion: v1                      # Specifies the API version (v1) for the ConfigMap resource
+kind: ConfigMap                     # Defines the resource type as ConfigMap
+metadata:                           # Metadata information about the ConfigMap
+  name: nginx-config                # Sets the name of the ConfigMap to "nginx-config"
+data:                               # Contains the data stored in the ConfigMap as key-value pairs
+  course: devops                   # Key "course" with the value "devops"
+  duration: "120hrs"               # Key "duration" with the value "120hrs", quoted to maintain format

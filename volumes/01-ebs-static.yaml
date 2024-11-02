@@ -87,64 +87,75 @@
 #     persistentVolumeClaim:
 #       claimName: ebs-static
 
-apiVersion: v1
-kind: PersistentVolume
+
+# PersistentVolume definition
+apiVersion: v1                             # Specifies API version as v1 for PersistentVolume
+kind: PersistentVolume                     # Defines the resource type as PersistentVolume
 metadata:
-  name: ebs-static
+  name: ebs-static                         # Sets the name of the PersistentVolume as "ebs-static"
 spec:
   accessModes:
-  - ReadWriteOnce
+  - ReadWriteOnce                          # Allows the volume to be mounted as read-write by a single node
   capacity:
-    storage: 20Gi
+    storage: 20Gi                          # Specifies a storage capacity of 20Gi for the PersistentVolume
   csi:
-    driver: ebs.csi.aws.com
-    fsType: ext4
-    volumeHandle: vol-0ac2dba7271c7b315
+    driver: ebs.csi.aws.com                # Specifies AWS EBS CSI driver (needs to be installed)
+    fsType: ext4                           # Sets the file system type to ext4
+    volumeHandle: vol-0ac2dba7271c7b315    # EBS volume ID created in AWS volumes
+
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
+
+# PersistentVolumeClaim (PVC) creation
+apiVersion: v1                             # Specifies API version as v1 for PersistentVolumeClaim
+kind: PersistentVolumeClaim                # Defines the resource type as PersistentVolumeClaim
 metadata:
-  name: ebs-static
+  name: ebs-static                         # Sets the name of the PersistentVolumeClaim as "ebs-static"
 spec:
-  storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be set
-  volumeName: ebs-static
+  storageClassName: ""                     # Explicitly set to empty to avoid assigning default StorageClass
+  volumeName: ebs-static                   # Specifies the PersistentVolume to claim by name
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOnce                        # Allows read-write access by a single node
   resources:
     requests:
-      storage: 5Gi
+      storage: 5Gi                         # Requests 5Gi of storage from the PersistentVolume
+
 ---
-apiVersion: v1
-kind: Pod
+
+# Pod creation
+apiVersion: v1                             # Specifies API version as v1 for Pod
+kind: Pod                                  # Defines the resource type as Pod
 metadata:
-  name: ebs-static
+  name: ebs-static                         # Sets the name of the Pod as "ebs-static"
   labels:
-    purpose: ebs-static
+    purpose: ebs-static                    # Adds a label "purpose: ebs-static" for Pod selection
 spec:
   nodeSelector:
-    topology.kubernetes.io/zone: us-east-1a
+    topology.kubernetes.io/zone: us-east-1a # Ensures the Pod is scheduled in the specified Availability Zone
   containers:
-  - name: nginx
-    image: nginx
-    volumeMounts: # docker run -v hostpath:contaierpath
-    - name: ebs-static
-      mountPath: /usr/share/nginx/html
+  - name: nginx                            # Defines a container named "nginx"
+    image: nginx                           # Uses the nginx image for this container
+    volumeMounts:                          # Specifies volume mounts for the container
+    - name: ebs-static                     # Mounts the volume named "ebs-static"
+      mountPath: /usr/share/nginx/html     # Mounts the volume at /usr/share/nginx/html in the container
   volumes:
-  - name: ebs-static
+  - name: ebs-static                       # Defines a volume named "ebs-static"
     persistentVolumeClaim:
-      claimName: ebs-static
+      claimName: ebs-static                # Links to the PersistentVolumeClaim named "ebs-static"
+
 ---
-kind: Service
-apiVersion: v1
+
+# Service creation - LoadBalancer
+kind: Service                              # Defines the resource type as Service
+apiVersion: v1                             # Specifies API version as v1 for Service
 metadata:
-  name: nginx
+  name: nginx                              # Sets the name of the Service as "nginx"
 spec:
-  type: LoadBalancer
+  type: LoadBalancer                       # Sets the Service type as LoadBalancer for external access
   selector:
-    purpose: ebs-static
+    purpose: ebs-static                    # Selects Pods labeled with "purpose: ebs-static" to expose
   ports:
-  - name: nginx-svc-port
-    protocol: TCP
-    port: 80 # service port
-    targetPort: 80 # container port
-    nodePort: 30007
+  - name: nginx-svc-port                   # Names the port configuration as "nginx-svc-port"
+    protocol: TCP                          # Specifies the protocol as TCP
+    port: 80                               # Sets the Service port to 80
+    targetPort: 80                         # Routes the Service port 80 to the container's port 80
+    nodePort: 30007                        # Assigns node port 30007 for external access to the Service

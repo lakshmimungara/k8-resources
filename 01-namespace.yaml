@@ -1,7 +1,12 @@
+# Namespaces - It provide a mechanism for isolating groups of resources within a single cluster
+# Names of resources need to be unique within a namespace, but not across namespaces.
+
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: expense
+  name: expense   # nameof the namespace
   labels:
     project: expense
     environment: dev
+
+# To view the namespaces  -  kubectl get namespace

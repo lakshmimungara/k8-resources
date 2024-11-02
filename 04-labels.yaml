@@ -1,12 +1,16 @@
-kind: Pod
-apiVersion: v1
+# labels - Labels are key/value pairs that are attached to objects such as Pods.
+# Labels can be used to organize and to select subsets of objects.
+# Labels can be attached to objects at creation time and subsequently added and modified at any time. 
+
+kind: Pod                          # Specifies the resource type as Pod
+apiVersion: v1                     # Defines the API version (v1) for this resource
 metadata:
-  name: labels
-  labels:
-    project: expense
-    module: backend
-    environment: dev
-spec:
-  containers:
-  - name: nginx
-    image: nginx
+  name: labels                     # Sets the name of the Pod as "labels"
+  labels:                          # Defines labels as key-value pairs for categorizing the Pod
+    project: expense               # Sets the project label to "expense"
+    module: backend                # Sets the module label to "backend"
+    environment: dev               # Sets the environment label to "dev"
+spec:                              # Specifies the configuration for the Pod
+  containers:                      # Defines the list of containers in this Pod
+  - name: nginx                    # Names the container "nginx"
+    image: nginx                   # Sets the container image to "nginx" (nginx container)

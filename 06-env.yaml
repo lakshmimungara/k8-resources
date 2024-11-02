@@ -1,15 +1,18 @@
-kind: Pod
-apiVersion: v1
+# env - allows you to set environment variables for a container, specifying a value directly for each variable that you name.
+
+kind: Pod                         # Specifies the resource type as Pod
+apiVersion: v1                    # Defines the API version (v1) for this resource
 metadata:
-  name: environment
-spec:
-  containers:
-  - name: nginx
-    image: nginx
-    env:
-      - name: course
-        value: devops
-      - name: trainer
-        value: "sivakumar reddy"
-      - name: duration
-        value: "120hr"
+  name: environment               # Sets the name of the Pod as "environment"
+spec:                             # Specifies the configuration for the Pod
+  containers:                     # Defines the list of containers in this Pod
+  - name: nginx                   # Names the container "nginx"
+    image: nginx                  # Sets the container image to "nginx"
+    env:                          # Defines environment variables for the container
+      - name: course              # Sets the environment variable name to "course"
+        value: devops            # Assigns the value "devops" to the "course" variable
+      - name: trainer             # Sets the environment variable name to "trainer"
+        value: "sivakumar reddy"  # Assigns the value "sivakumar reddy" to the "trainer" variable
+      - name: duration            # Sets the environment variable name to "duration"
+        value: "120hr"           # Assigns the value "120hr" to the "duration" variable
+

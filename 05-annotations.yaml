@@ -1,11 +1,24 @@
-kind: Pod
-apiVersion: v1
+# annotations - You can use Kubernetes annotations to attach arbitrary non-identifying metadata to objects.
+# The metadata in an annotation can be small or large, structured or unstructured, and can include characters not permitted by labels.
+
+kind: Pod                         # Specifies the resource type as Pod
+apiVersion: v1                    # Defines the API version (v1) for this resource
 metadata:
-  name: annotations
-  annotations:
-    imageregistry: "https://hub.docker.com/"
-    buildURL: "https://jenkins.joindevops.com/expense/backend/build/67"
-spec:
-  containers:
-  - name: nginx
-    image: nginx
+  name: annotations               # Sets the name of the Pod as "annotations"
+  annotations:                    # Adds metadata annotations as key-value pairs
+    imageregistry: "https://hub.docker.com/"  # Specifies the image registry URL
+    buildURL: "https://jenkins.joindevops.com/expense/backend/build/67"  # Provides the URL to the Jenkins build associated with this Pod
+spec:                             # Specifies the configuration for the Pod
+  containers:                     # Defines the list of containers in this Pod
+  - name: nginx                   # Names the container "nginx"
+    image: nginx                  # Sets the container image to "nginx"
+
+
+
+### Difference between labels and annotations 
+
+# Labels - Used to attach identifying metadata to objects, such as pods. Labels are key-value pairs that can be used to group objects and perform queries.
+
+# Annotations - Used to attach non-identifying metadata to objects. Annotations can include any kind of information that is useful to the user, such as contact details or debugging information. Annotations can be small or large, structured or unstructured, and can include characters not permitted by labels.
+
+# Annotations are primarily for humans, while labels are for Kubernetes.

@@ -1,14 +1,17 @@
-kind: Service
-apiVersion: v1
-metadata:
-  name: nginx
-spec:
-  selector:
-    project: expense
-    module: backend
-    environment: dev
-  ports:
-  - name: nginx-svc-port
-    protocol: TCP
-    port: 80 # service port
-    targetPort: 80 # container port
+# Service - a Service is a method for exposing a network application that is running as one or more Pods in your cluster.
+
+kind: Service                     # Defines the resource type as Service
+apiVersion: v1                    # Specifies the API version (v1) for the Service resource
+metadata:                         # Metadata information about the Service
+  name: nginx                     # Sets the name of the Service to "nginx"
+spec:                             # Details the specifications for the Service
+  selector:                       # Defines the label selector to match Pods for this Service
+    project: expense              # Matches Pods with the label "project: expense"
+    module: backend               # Matches Pods with the label "module: backend"
+    environment: dev              # Matches Pods with the label "environment: dev"
+  ports:                          # Specifies the list of ports exposed by the Service
+  - name: nginx-svc-port          # Names the port for easy reference as "nginx-svc-port"
+    protocol: TCP                 # Uses TCP as the protocol for communication
+    port: 80                      # Sets the Service's external port to 80
+    targetPort: 80                # Directs traffic to port 80 on the container running inside the matched Pods
+

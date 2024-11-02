@@ -1,10 +1,12 @@
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
+# StorageClass
+
+kind: StorageClass                   # Defines the resource type as StorageClass
+apiVersion: storage.k8s.io/v1         # Specifies the API version for StorageClass
 metadata:
-  name: efs-expense
-provisioner: efs.csi.aws.com
+  name: efs-expense                   # Sets the name of the StorageClass as "efs-expense"
+provisioner: efs.csi.aws.com          # Uses AWS EFS CSI driver to provision storage
 parameters:
-  provisioningMode: efs-ap
-  directoryPerms: "700"
-  fileSystemId: fs-095be04f1087505d5
-  basePath: "/expense"
+  provisioningMode: efs-ap            # Specifies EFS Access Point as the provisioning mode
+  directoryPerms: "700"               # Sets directory permissions to "700" (owner-only access)
+  fileSystemId: fs-095be04f1087505d5  # ID of the EFS file system to be used
+  basePath: "/expense"                # Sets the base path in EFS to "/expense"
